@@ -1,4 +1,4 @@
-import { Schema, type AnyObject } from "mongoose";
+import { type AnyObject, Schema } from "mongoose";
 import type { ArrayConstraints, SchemaConstraints } from "./types.js";
 
 export interface AnalyzerOptions<T> {

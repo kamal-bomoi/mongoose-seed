@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
 import type { Faker } from "@faker-js/faker";
+import type mongoose from "mongoose";
 import type { AnyObject, Model, Schema, Types } from "mongoose";
 
 export type Instance = FieldConstraints["type"];

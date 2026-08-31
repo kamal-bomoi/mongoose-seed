@@ -114,6 +114,7 @@ await seed(Test, {
   quantity: 5000 // or within range [1000, 5000],
   clean: true, // Remove existing documents before seeding
   debug: false, // Log progress and performance information
+  spinner: true, // Show ora spinners (set to false when running in parallel)
   exclude: ["mixed"], // Fields to exclude
   timestamps: true, // Generate random timestamps or let mongoose generate as it normally would
   optional_field_probability: 0.8, // 80% chance that optional fields will be included
@@ -219,3 +220,21 @@ To resolve this, try reducing the quantity parameter to a smaller value — 5,00
 is often a safe range for complex documents. For very large datasets with deeply
 nested structures, consider making multiple calls to the `seed()` function,
 each with a smaller quantity, to stay within the BSON size limits.
+
+### Parallel seeding and spinner warnings
+
+When running multiple `seed()` calls in parallel (e.g. via `Promise.all`), ora may
+output warnings like:
+
+> [ora] Multiple concurrent spinners detected. This may cause visual corruption. Use one spinner at a time.
+
+To avoid this, disable spinners by setting `spinner: false` in the seed config:
+
+```typescript
+await Promise.all([
+  seed(ModelA, { quantity: 1000, spinner: false }),
+  seed(ModelB, { quantity: 1000, spinner: false })
+]);
+```
+
+When `spinner` is not set, it defaults to `true` (spinners enabled).

@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.3] - 2026-08-31
+
+### Added
+
+- Added `spinner` option to `SeedConfig` to enable or disable ora spinners.
+
 ## [2.0.0] - 2026-01-30
 
 ### Changed

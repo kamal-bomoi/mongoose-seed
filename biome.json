@@ -1,0 +1,147 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.11/schema.json",
+
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "src/**/*.{js,ts}",
+      "demo.ts"
+    ]
+  },
+
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 80
+  },
+
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "style": {
+        "noNonNullAssertion": "off"
+      },
+      "correctness": {
+        "noGlobalDirnameFilename": "error",
+        "noUndeclaredDependencies": "error",
+        "noUndeclaredVariables": "error",
+        "noUnusedVariables": "error",
+        "noUnusedImports": "error"
+      },
+      "complexity": {
+        "noBannedTypes": "off",
+        "noImportantStyles": "off",
+        "noExcessiveLinesPerFunction": "off",
+        "noExcessiveNestedTestSuites": "error",
+        "noUselessStringConcat": "error",
+        "useWhile": "error"
+      },
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noApproximativeNumericConstant": {
+          "level": "error",
+          "fix": "none"
+        },
+        "noConfusingVoidType": "error",
+        "noConstantBinaryExpressions": "error",
+        "noDebugger": {
+          "level": "error",
+          "fix": "none"
+        },
+        "noDoubleEquals": {
+          "level": "error",
+          "fix": "none"
+        },
+        "noEmptyBlockStatements": "warn",
+        "noEvolvingTypes": "error",
+        "noFocusedTests": {
+          "level": "error",
+          "fix": "none"
+        },
+        "noUnassignedVariables": "error",
+        "noUnsafeNegation": {
+          "level": "error",
+          "fix": "none"
+        },
+        "noVar": {
+          "level": "error",
+          "fix": "none"
+        },
+        "useErrorMessage": "error",
+        "useIsArray": "error",
+        "useStaticResponseMethods": "info"
+      },
+      "performance": {
+        "noAwaitInLoops": "off",
+        "noBarrelFile": "error",
+        "noDelete": {
+          "level": "error",
+          "fix": "none"
+        },
+        "noNamespaceImport": "error",
+        "noReExportAll": "error",
+        "useTopLevelRegex": "off"
+      }
+    }
+  },
+
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double",
+      "semicolons": "always",
+      "trailingCommas": "none",
+      "arrowParentheses": "asNeeded",
+      "quoteProperties": "asNeeded",
+      "bracketSameLine": false,
+      "attributePosition": "auto",
+      "bracketSpacing": true
+    }
+  },
+
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+
+  "overrides": [
+    {
+      "includes": ["*.config.{js,ts,mjs,cjs}"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noDefaultExport": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/*.js"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUndeclaredVariables": "off",
+            "noUnusedVariables": "off"
+          },
+          "complexity": {
+            "noCommaOperator": "off"
+          },
+          "suspicious": {
+            "noAssignInExpressions": "off"
+          }
+        }
+      }
+    }
+  ]
+}

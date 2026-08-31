@@ -1,7 +1,7 @@
 {
   "name": "@kamalyb/mongoose-seed",
   "version": "2.0.2",
-  "author": "Kamal Yusuf",
+  "author": "Kamal Bomoi",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
@@ -29,19 +29,20 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsc --noEmit && tsdown",
-    "prepublishOnly": "yarn run build"
+    "prepublishOnly": "yarn run build",
+    "lint": "biome check --write"
   },
   "devDependencies": {
-    "@types/node": "^25.1.0",
-    "prettier": "^3.8.1",
-    "tsdown": "^0.20.1",
-    "typescript": "^5.9.3"
+    "@biomejs/biome": "^2.5.11",
+    "@types/node": "^26.4.0",
+    "tsdown": "^0.22.14",
+    "typescript": "^7.0.2"
   },
-  "packageManager": "yarn@4.12.0",
+  "packageManager": "yarn@4.18.0",
   "dependencies": {
-    "@faker-js/faker": "^10.2.0",
-    "mongoose": "^9.1.5",
-    "ora": "^9.1.0"
+    "@faker-js/faker": "^10.6.0",
+    "mongoose": "^9.9.4",
+    "ora": "^9.4.1"
   },
   "peerDependencies": {
     "mongoose": ">=9"

@@ -3,9 +3,5 @@ node_modules
 dist
 *.log
 .idea
-.env
-build
-todo
 .vscode
 .yarn
-z.*

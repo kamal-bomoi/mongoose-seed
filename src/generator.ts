@@ -1,4 +1,9 @@
-import { Types, type AnyObject, type Model } from "mongoose";
+import { createHash, randomUUID } from "node:crypto";
+import { type Faker, faker } from "@faker-js/faker";
+import { type AnyObject, type Model, Types } from "mongoose";
+import { registry } from "./registry.js";
+import type { SchemaAnalyzer } from "./schema-analyzer.js";
+import { contexts, generic } from "./string-matchers.js";
 import type {
   ArrayConstraints,
   BigIntConstraints,
@@ -21,11 +26,6 @@ import type {
   StringConstraints,
   UUIDConstraints
 } from "./types.js";
-import { faker, type Faker } from "@faker-js/faker";
-import { createHash, randomUUID } from "node:crypto";
-import { contexts, generic } from "./string-matchers.js";
-import { registry } from "./registry.js";
-import type { SchemaAnalyzer } from "./schema-analyzer.js";
 
 export interface GeneratorOptions<T, U = Omit<T, "_id" | "__v">> {
   labels: {
@@ -36,6 +36,7 @@ export interface GeneratorOptions<T, U = Omit<T, "_id" | "__v">> {
   };
   timestamps?: boolean;
   optional_field_probability?: number;
+  spinner?: boolean;
   generators?: {
     [K in keyof U]?: GeneratorFn<U[K]>;
   } & {
@@ -105,9 +106,7 @@ export class Generator<T> {
     if (this.#analyzer.is_timestamp_field(constraints.path)) return undefined;
 
     if ((this.#options?.generators as AnyObject)?.[constraints.path])
-      return (this.#options?.generators as AnyObject)[constraints.path]?.(
-        faker
-      );
+      return (this.#options.generators as AnyObject)[constraints.path]?.(faker);
 
     switch (constraints.type) {
       case "String":
@@ -328,7 +327,7 @@ export class Generator<T> {
 
     const ref = this.#resolve_ref_model(constraints.ref);
 
-    return await registry.single(this.#model, ref);
+    return await registry.single(this.#model, ref, this.#options.spinner);
   }
 
   #uuid(_constraints: UUIDConstraints) {
@@ -351,7 +350,8 @@ export class Generator<T> {
       return await registry.multiple(
         this.#model,
         this.#resolve_ref_model(constraints.ref),
-        length
+        length,
+        this.#options.spinner
       );
 
     const items: any[] = [];
@@ -443,7 +443,7 @@ export class Generator<T> {
           required: true
         });
 
-      case "array":
+      case "array": {
         const length = faker.number.int({ min: 1, max: 3 });
 
         const items: any[] = [];
@@ -452,8 +452,9 @@ export class Generator<T> {
           items.push(await this.#mixed(constraints, depth + 1));
 
         return items;
+      }
 
-      case "object":
+      case "object": {
         const entries = faker.number.int({ min: 1, max: 3 });
         const obj: AnyObject = {};
 
@@ -461,6 +462,7 @@ export class Generator<T> {
           obj[faker.word.sample()] = await this.#mixed(constraints, depth + 1);
 
         return obj;
+      }
     }
   }
 

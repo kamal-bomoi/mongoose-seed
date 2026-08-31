@@ -1,25 +1,27 @@
-import type { AnyObject, InsertManyResult, Model } from "mongoose";
-import { SchemaAnalyzer, type AnalyzerOptions } from "./schema-analyzer.js";
-import { Generator, type GeneratorOptions } from "./generator.js";
 import { faker } from "@faker-js/faker";
-import {
-  info,
-  success,
-  format_memory,
-  warning,
-  memory_usage,
-  BLUE,
-  RESET,
-  gauge
-} from "./utils.js";
-import { registry } from "./registry.js";
+import type { AnyObject, InsertManyResult, Model } from "mongoose";
 import ora, { type Ora } from "ora";
+import { Generator, type GeneratorOptions } from "./generator.js";
+import { registry } from "./registry.js";
+import { type AnalyzerOptions, SchemaAnalyzer } from "./schema-analyzer.js";
+import {
+  BLUE,
+  format_memory,
+  gauge,
+  info,
+  memory_usage,
+  RESET,
+  success,
+  warning
+} from "./utils.js";
 
 export interface SeedConfig<T>
-  extends AnalyzerOptions<T>, Omit<GeneratorOptions<T>, "labels"> {
+  extends AnalyzerOptions<T>,
+    Omit<GeneratorOptions<T>, "labels"> {
   quantity: number | [min: number, max: number];
   clean?: boolean;
   debug?: boolean;
+  spinner?: boolean;
 }
 
 export const seed = async <T>(
@@ -27,6 +29,7 @@ export const seed = async <T>(
   config: SeedConfig<T>
 ): Promise<InsertManyResult<T>> => {
   const debug = config.debug ?? true;
+  const use_spinner = config.spinner ?? true;
   let peak_memory = 0;
 
   const update_peak_memory = () => {
@@ -37,7 +40,10 @@ export const seed = async <T>(
   let cooker: Ora | undefined;
 
   if (!debug)
-    cooker = ora(`${BLUE} [${model.modelName}] Cooking${RESET}`).start();
+    cooker = ora({
+      text: `${BLUE} [${model.modelName}] Cooking${RESET}`,
+      isEnabled: use_spinner
+    }).start();
 
   const start = performance.now();
 
@@ -45,9 +51,10 @@ export const seed = async <T>(
     let cleaner: Ora | undefined;
 
     if (debug)
-      cleaner = ora(
-        `${BLUE} [${model.modelName}] Cleaning collection${RESET}`
-      ).start();
+      cleaner = ora({
+        text: `${BLUE} [${model.modelName}] Cleaning collection${RESET}`,
+        isEnabled: use_spinner
+      }).start();
 
     const { result, elapsed } = await gauge.async<
       Awaited<ReturnType<typeof model.deleteMany>>
@@ -90,7 +97,8 @@ export const seed = async <T>(
           generators: config.generators,
           timestamps: config.timestamps,
           optional_field_probability: config.optional_field_probability,
-          labels: analyzer.labels
+          labels: analyzer.labels,
+          spinner: use_spinner
         }).generate(constraints)
       );
 
@@ -130,9 +138,10 @@ export const seed = async <T>(
       `[${model.modelName}] Peak memory during generation: ${format_memory(peak_memory)}`
     );
 
-    inserter = ora(
-      `${BLUE} [${model.modelName}] Inserting ${quantity.toLocaleString()} documents${RESET}`
-    ).start();
+    inserter = ora({
+      text: `${BLUE} [${model.modelName}] Inserting ${quantity.toLocaleString()} documents${RESET}`,
+      isEnabled: use_spinner
+    }).start();
   }
 
   const result = await gauge.async(
