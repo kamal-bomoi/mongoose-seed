@@ -98,15 +98,18 @@ export class Generator<T> {
   }
 
   async #value(constraints: FieldConstraints) {
+    if (this.#analyzer.is_timestamp_field(constraints.path)) return undefined;
+
+    const custom_generator = (this.#options?.generators as AnyObject)?.[
+      constraints.path
+    ] as ((faker: Faker) => unknown) | undefined;
+
+    if (custom_generator) return custom_generator(faker);
+
     if (constraints.default !== undefined)
       return this.#default_value(constraints);
 
     if (!this.#should_generate(constraints)) return undefined;
-
-    if (this.#analyzer.is_timestamp_field(constraints.path)) return undefined;
-
-    if ((this.#options?.generators as AnyObject)?.[constraints.path])
-      return (this.#options.generators as AnyObject)[constraints.path]?.(faker);
 
     switch (constraints.type) {
       case "String":
@@ -553,7 +556,7 @@ export class Generator<T> {
 
     let text = "";
 
-    while (text.length < length) text += faker.lorem.paragraph() + " ";
+    while (text.length < length) text += `${faker.lorem.paragraph()} `;
 
     return text.length > max ? text.substring(0, max) : text;
   }

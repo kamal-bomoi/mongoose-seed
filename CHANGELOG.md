@@ -1,6 +1,13 @@
 # Changelog
 
-## [2.0.3] - 2026-08-31
+## [2.1.1] - 2026-09-04
+
+### Fixed
+
+- Custom `generators` for a path now always take precedence over the schema
+  `default` and are no longer skipped by `optional_field_probability`.
+  Previously a generator on a path with a `default` (including
+  `default: null`) was silently ignored.
 
 ### Added
 

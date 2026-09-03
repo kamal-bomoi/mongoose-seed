@@ -136,6 +136,15 @@ await seed(Test, {
 await mongoose.disconnect();
 ```
 
+### Custom Generator Precedence
+
+A custom generator for a path always wins: it takes precedence over the
+schema `default` for that path, and it is not subject to
+`optional_field_probability` (it fills 100% of documents). Fields without a
+custom generator keep the default behavior: schema defaults apply, then
+optional fields are included randomly per `optional_field_probability`.
+Mongoose setters (e.g. `uppercase`, `trim`) still apply to custom values.
+
 ### Handling Model References
 
 When your models reference other models via ObjectId fields, the seeder automatically handles this through an internal registry system. Here's how it works:
@@ -207,6 +216,15 @@ As long as you seed referenced models first within the same process, the seeder 
 In the seeding context, if a field's `default` or `required` is a function,
 `this` refers to a plain JavaScript object (POJO), unlike in regular Mongoose
 usage where `this` would be a Mongoose document.
+
+### `default: null` with sparse unique indexes
+
+MongoDB sparse indexes skip documents where the field is missing, but they
+still index explicit `null` values. A schema path declared as
+`{ unique: true, sparse: true }` with `default: null` will therefore throw
+`E11000 duplicate key` as soon as two documents leave the field unset. Prefer
+omitting the default (so unset fields stay absent) or supply a custom
+generator that always returns a unique value.
 
 ### Bulk Write Error – "offset is out of range"
 
