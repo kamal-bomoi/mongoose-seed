@@ -19,7 +19,8 @@ export class Registry {
   async single(parent: Model<any>, ref_model: string, spinner?: boolean) {
     let ids = this.#documents.get(ref_model);
 
-    if (!ids || ids.length === 0) ids = await this.#load(parent, ref_model, spinner);
+    if (!ids || ids.length === 0)
+      ids = await this.#load(parent, ref_model, spinner);
 
     if (ids.length === 0)
       throw new Error(
@@ -29,10 +30,16 @@ export class Registry {
     return faker.helpers.arrayElement(ids);
   }
 
-  async multiple(parent: Model<any>, ref_model: string, count: number, spinner?: boolean) {
+  async multiple(
+    parent: Model<any>,
+    ref_model: string,
+    count: number,
+    spinner?: boolean
+  ) {
     let ids = this.#documents.get(ref_model);
 
-    if (!ids || ids.length === 0) ids = await this.#load(parent, ref_model, spinner);
+    if (!ids || ids.length === 0)
+      ids = await this.#load(parent, ref_model, spinner);
 
     if (ids.length === 0)
       throw new Error(

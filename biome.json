@@ -9,10 +9,7 @@
 
   "files": {
     "ignoreUnknown": false,
-    "includes": [
-      "src/**/*.{js,ts}",
-      "demo.ts"
-    ]
+    "includes": ["src/**/*.{js,ts}", "demo.ts"]
   },
 
   "formatter": {
